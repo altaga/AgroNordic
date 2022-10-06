@@ -214,9 +214,9 @@ La parte del codigo que controlaba el estado de la electrovlula era el siguiente
 
 Code: URL: https://github.com/altaga/AgroNordic/blob/main/Valve_Code/src/led_svc.c
 
-# rPI Gateway:
+# RPi Gateway:
 
-Por ultimo como cereza en el pastel, vamos a ocupar una rPI como gateway BLE para mandar los datos ditrectamente a AWS IoT.
+Por ultimo como cereza en el pastel, vamos a ocupar una RPi como gateway BLE para mandar los datos ditrectamente a AWS IoT.
 
 Real implementation:
 
@@ -224,10 +224,21 @@ Real implementation:
 
 El codigo de esta implementacion usando nRF Connect es:
 
-https://github.com/altaga/AgroNordic/tree/main/Valve_Code
+https://github.com/altaga/AgroNordic/blob/main/Gateway/index.py
+
+En esta implementacion se realizo un MQTT Client en la RPi, el cual segun los resultados que este leyendo de nuestros devices y mandando estos a AWA IoT core ademas de poder controlar la valula al escribir un valor en el topic "/changevalve".
 
 
-# Helium - AWS IoT Integration:
+
+
+
+
+
+
+
+
+
+# RPi - AWS IoT Integration:
 
 Since the messages arrive without problem to the network and Helium, we must integrate AWS IoT, for this we must go to the Integrations section and select AWS IoT Core.
 
@@ -265,7 +276,7 @@ Performing a system test.
 
 For our dashboard we made a simple web page with ReactJS, we decided that the green color was the most representative of a sustainability challenge.
 
-For the graphics page, we made a crop selector, where we can see the real-time data of each crop, the data in the graphics is sent directly from Helium, in our integration with AWS.
+For the graphics page, we made a crop selector, where we can see the real-time data of each crop, the data in the graphics is sent directly from AWS IoT Integration.
 
 <img src="https://i.ibb.co/Gt9mnXX/image.png">
 
@@ -301,9 +312,9 @@ Once we finish creating the WebApp, all the steps of the Ci / CD cycle should ap
 
 The result will be a link similar to this one.
 
-WebApp: https://main.d1xaout2n54w4m.amplifyapp.com/
+WebApp: https://main.d30it56wy5f0pr.amplifyapp.com/
 
-# Irrigation system via Openweathermap Forecast and Particle Photon.
+# Irrigation system via Openweathermap Forecast and Thingy53.
 
 We have to explain first the why's before the know how's.
 

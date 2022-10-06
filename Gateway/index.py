@@ -1,13 +1,44 @@
 from bluepy import btle
+import paho.mqtt.client as mqtt
+import os, urlparse
 
 class MyDelegate(btle.DefaultDelegate):
     def __init__(self):
         btle.DefaultDelegate.__init__(self)
 
     def handleNotification(self, cHandle, data):
-        print(data)
-        print(data[0])
-        
+        mqttc.publish("/sensorsvalue", data)
+
+# Define event callbacks
+def on_connect(client, userdata, flags, rc):
+    print("rc: " + str(rc))
+ 
+def on_message(client, obj, msg):
+    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    if(msg.topic==="/changevalve"): # Send anything to this topic to change va;ve state.
+        setup_data = b"\x01\x00"
+        p.writeCharacteristic(char_uuid_control[0], setup_data)
+ 
+def on_publish(client, obj, mid):
+    print("mid: " + str(mid))
+ 
+def on_subscribe(client, obj, mid, granted_qos):
+    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+ 
+def on_log(client, obj, level, string):
+    print(string)
+ 
+mqttc = mqtt.Client()
+# Assign event callbacks
+mqttc.on_message = on_message
+mqttc.on_connect = on_connect
+mqttc.on_publish = on_publish
+mqttc.on_subscribe = on_subscribe
+ 
+# Connect
+mqttc.connect("AWS MQTT URL", 1883)
+mqttc.subscribe("/changevalve", 0)
+
 # Initialisation  -------
 address = "YOUR_ADDRESS"
 
@@ -65,6 +96,8 @@ for x in char_uuid_read:
 
 print("=== Main Loop ===")
 
-while True:
+rc = 0
+while rc == 0:
+    rc = mqttc.loop()
     if p.waitForNotifications(1.0):
         continue
