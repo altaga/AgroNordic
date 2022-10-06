@@ -1,0 +1,55 @@
+// To get started, press Ctrl+Space to bring up the completion menu and view the available nodes.
+
+// You can also use the buttons in the sidebar to perform actions on nodes.
+// Actions currently available include:
+
+// * Enabling / disabling the node
+// * Adding the bus to a bus
+// * Removing the node
+// * Connecting ADC channels
+
+// For more help, browse the DeviceTree documentation at https: //docs.zephyrproject.org/latest/guides/dts/index.html
+// You can also visit the nRF DeviceTree extension documentation at https: //nrfconnect.github.io/vscode-nrf-connect/devicetree/nrfdevicetree.html
+
+&i2c1 {
+	bme688@76 {
+		compatible = "bosch,bme680";
+		label = "BME688";
+		reg = <0x76>;
+		status = "okay";
+	};
+
+	/*
+	ads1115: ads1115@48 {
+		compatible = "ti,ads1115";
+		reg = <0x48>;
+		label = "ADS1115";
+		#io-channel-cells = <1>;
+		channel@4 {
+			reg = <0x04>;
+			zephyr,gain = "ADC_GAIN_1_6";
+			zephyr,reference = "ADC_REF_VDD_1";
+			zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		};
+	};
+	 */
+};
+
+/ {
+	aliases {
+		counter = &counter0;
+		enable = &enable0;
+	};
+
+	gpio_keys {
+        compatible = "gpio-keys";
+        counter0: counter_0 {
+            gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
+            label = "Counter 0";
+        };
+        enable0: enable_0 {
+            gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+            label = "Enable 0";
+        };
+    };
+};
