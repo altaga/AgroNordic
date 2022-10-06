@@ -116,19 +116,58 @@ Crop yield analysis.
 
 ## Hardware Diagram:
 
-### Electro Valve:
-
-<img src="https://i.ibb.co/bHM8cV0/vLCE-bb.png">
-
 ## Temperature, Humidity and Moisture Device:
 
 <img src="https://i.ibb.co/JFcVwKX/temp-bb.png">
 
-# Why Helium Network:
+### Electro Valve:
 
-One huge emphasis of this project is for it to also be used in Urban Agriculture and BLE is the best choice for that one as we live in one of the biggest cities in the world (Mexico). 
+<img src="https://i.ibb.co/bHM8cV0/vLCE-bb.png">
 
-And regarding scalability, LoRa is one of the best and easier networks to work it demanding low power and also performing as good as the components in your devices and gateway are, for this application we can envision a manufacturing run of devices similar to this in every Urban Agriculture setting.
+# Temperature, Humidity and Moisture Device:
+
+Main sensor circuit.
+
+Bill of Materials:
+
+- Thingy53.
+- XIAO nRF52840.
+- Capacitive Soil Moisture Sensor
+
+<img src="https://i.ibb.co/JFcVwKX/temp-bb.png">
+
+Real implementation:
+
+<img src="https://i.ibb.co/37304R1/20221003-001525.jpg">
+
+El codigo de esta implementacion usando nRF Connect es:
+
+https://github.com/altaga/AgroNordic/tree/main/Sensor_Station
+
+Toda la configuracion de BLE que tiene el device es la siguiente.
+
+- Device Name: SENSORST
+- Service Temperature UUID: 0000fe40cc7a482a984a7f2ed5b3e58f
+  - Characteristic UUID: 0x0000fe438e2245419d4c21edae82ed19
+- Service Humidity UUID: 0000fe41cc7a482a984a7f2ed5b3e58f
+  - Characteristic UUID: 0x0000fe448e2245419d4c21edae82ed19
+- Service Moisture UUID: 0000fe42cc7a482a984a7f2ed5b3e58f
+  - Characteristic UUID: 0x0000fe458e2245419d4c21edae82ed19
+
+La parte del codigo que manda los datos como notificaciones BLE para cada uno de los sensores es.
+
+    err = bt_gatt_notify(NULL, &stsensor_svc.attrs[2], &temp, sizeof(temp));
+    if (err)
+    {
+      LOG_ERR("Notify error: %d", err);
+    }
+    else
+    {
+      LOG_INF("Send notify ok");
+      temp = (temp == 0) ? 0x100 : 0;
+    }
+
+Code: URL: https://github.com/altaga/AgroNordic/blob/main/Sensor_Station/src/main.c
 
 # Valve Module:
 
@@ -150,59 +189,43 @@ Real implementation:
 
 <img src="https://i.ibb.co/M8Q4dpC/20221003-001929.jpg">
 
-El codigo de esta implementacion es:
+El codigo de esta implementacion usando nRF Connect es:
 
+https://github.com/altaga/AgroNordic/tree/main/Valve_Code
 
+Toda la configuracion de BLE que tiene el device es la siguiente.
 
-# Lora E5 mini Setup:
+- Device Name: ElectroValve
+- Service UUID: 0000fe38cc7a482a984a7f2ed5b3e58f
+  - Characteristic UUID: 0000fe398e2245419d4c21edae82ed19
 
-As part of this project, it was decided to add another type of LoRa board from the WIO family to show that among all of them and according to the needs, it is possible to create an ecosystem of sensors.
+La parte del codigo que controlaba el estado de la electrovlula era el siguiente.
 
-CODE: https://github.com/EddOliver/AgroLoRa/tree/main/FreeRTOS_LoRaWAN_AT
+  void led_update(void)
+  {
+    if (!led_ok) {
+      return;
+    }
 
-https://wiki.seeedstudio.com/LoRa_E5_mini/
+    led_state = !led_state;
+    LOG_INF("Turn %s LED", led_state ? "on" : "off");
+    gpio_pin_set(led.port, led.pin, led_state);
+  }
 
-<img src="https://i.ibb.co/XXCZFfF/image.png">
+Code: URL: https://github.com/altaga/AgroNordic/blob/main/Valve_Code/src/led_svc.c
 
-First of all, this board is part of the family of STM32 chips, it requires the ST-LINK/V2 Programmer, luckily this type of programmers are already embedded in many other boards and it is possible to use them to program them, in our case we already had a board B-L072Z-LRWAN which already has the ST-LINK/V2 Programmer integrated.
+# rPI Gateway:
 
-<img src="https://i.ibb.co/4Mkvh7L/image.png">
+Por ultimo como cereza en el pastel, vamos a ocupar una rPI como gateway BLE para mandar los datos ditrectamente a AWS IoT.
 
-To program our board we have to connect the programming pins as follows.
+Real implementation:
 
-<img src="https://i.ibb.co/ScZZzZy/Untitled-Sketch.png">
+<img src="https://i.ibb.co/KFTyRGP/20221002-235618.jpg">
 
-This board can be programmed through Arduino IDE and STM32CubeIDE, in our case since SeeedStudio provides us with an example of how to configure LoRa credentials from STM32CubeIDE, we decided that it would be better to use ST's own software.
+El codigo de esta implementacion usando nRF Connect es:
 
-<img src="https://i.ibb.co/FndpCJC/image.png">
+https://github.com/altaga/AgroNordic/tree/main/Valve_Code
 
-The credentials that we obtained in [Helium Account and Credentials](#helium-account-and-credentials) are going to be configured in the file
-
-https://github.com/EddOliver/AgroLoRa/blob/main/FreeRTOS_LoRaWAN_AT/LoRaWAN/App/se-identity.h
-
-<img src="https://i.ibb.co/zbW5kmR/image.png">
-
-Once this is done, we will only have to build the project and program it on our board.
-
-<img src="https://i.ibb.co/pyrmd1x/image.png">
-
-If all the previous process is well done, we can check on a serial monitor that the board responds to AT commands.
-
-<img src="https://i.ibb.co/HBrn9ps/image.png">
-
-Since we have our board working as a LoRa node, we can send data through it from any MCU through serial communication, in our case we use an ESP32 which will be in charge of reading the data from the sensors and sending them through the board to LoRa.
-
-Code: https://github.com/EddOliver/AgroLoRa/tree/main/AgroLoRaESP
-
-# Helium Console
-
-All the data at this moment should already be arriving at the Helium console.
-
-<img src="https://i.ibb.co/48WqNMW/image.png">
-
-The data that we receive in helium will always be encoded in base64, so already in our dashboard we will have to perform some algorithm to transform it back into the original data.
-
-<img src="https://i.ibb.co/GCF3rtY/image-6.png">
 
 # Helium - AWS IoT Integration:
 
