@@ -146,11 +146,11 @@ All the BLE configuration that the device has is as follows.
 
 - Device Name: SENSORST
 - Service Temperature UUID: 0000fe40cc7a482a984a7f2ed5b3e58f
-  - Characteristic UUID: 0x0000fe438e2245419d4c21edae82ed19
+  - Characteristic UUID: 0000fe438e2245419d4c21edae82ed19
 - Service Humidity UUID: 0000fe41cc7a482a984a7f2ed5b3e58f
-  - Characteristic UUID: 0x0000fe448e2245419d4c21edae82ed19
+  - Characteristic UUID: 0000fe448e2245419d4c21edae82ed19
 - Service Moisture UUID: 0000fe42cc7a482a984a7f2ed5b3e58f
-  - Characteristic UUID: 0x0000fe458e2245419d4c21edae82ed19
+  - Characteristic UUID: 0000fe458e2245419d4c21edae82ed19
 
 The part of the code that sends the data as BLE notifications for each of the sensors is:
 
