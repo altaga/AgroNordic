@@ -1,7 +1,7 @@
 # AgroNordic
 Sustainable platform of sensing and irrigation automation based around the Thingy53 with predictive analysis.
 
-<img src="https://i.ibb.co/GJ5JwQR/agronordic-negro-sin-fondo.png" width="400">
+<img src="https://i.ibb.co/GJ5JwQR/agronordic-negro-sin-fondo.png">
 
 Sustainable platform of sensing and irrigation automation based around the SenseCAP K1100 with predictive analysis via the Helium Network.
 
@@ -201,16 +201,16 @@ Toda la configuracion de BLE que tiene el device es la siguiente.
 
 La parte del codigo que controlaba el estado de la electrovlula era el siguiente.
 
-  void led_update(void)
-  {
-    if (!led_ok) {
-      return;
-    }
+    void led_update(void)
+    {
+      if (!led_ok) {
+        return;
+      }
 
-    led_state = !led_state;
-    LOG_INF("Turn %s LED", led_state ? "on" : "off");
-    gpio_pin_set(led.port, led.pin, led_state);
-  }
+      led_state = !led_state;
+      LOG_INF("Turn %s LED", led_state ? "on" : "off");
+      gpio_pin_set(led.port, led.pin, led_state);
+    }
 
 Code: URL: https://github.com/altaga/AgroNordic/blob/main/Valve_Code/src/led_svc.c
 
@@ -232,7 +232,7 @@ En esta implementacion se realizo un MQTT Client en la RPi, el cual segun los re
 
 El poder obtener los datos de los sensores no tiene sentido alguno si no se tiene un servicio en la nube que obtenga los datos y los utilice con algun fin, en este caso AWS.
 
-<img src="https://i.ibb.co/zG8MqSM/image.png">
+<img src="https://i.ibb.co/MCDgc21/Image.png">
 
 Para poder mandar los datos desde nuestra gateway a AWS IoT, ocupamos su servicio de MQTTS, para eso tendremos que crear una Thing en la plataforma.
 
@@ -395,7 +395,7 @@ Full Solution:
 
 # EPIC DEMO:
 
-[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](https://www.youtube.com/watch?v=z-katBlGzrI)
+[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](pending...)
 
 # Benefits and Sustainability:
 
