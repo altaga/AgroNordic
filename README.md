@@ -367,11 +367,11 @@ Here is the final version of the complementary sensor:
 
 Thingy53 Valve:
 
-<img src="https://i.ibb.co/Nxr11wB/20221002-235047.png">
+<img src="https://i.ibb.co/dJkbWNK/Image.png">
 
 On Site:
 
-<img src="https://i.ibb.co/qxNC9Zm/20221003-134815.png">
+<img src="https://i.ibb.co/bBMmnWL/Image.png">
 
 Thingy53 Sensors:
 
@@ -391,7 +391,7 @@ On Site:
 
 Full Solution:
 
-<img src="https://i.ibb.co/sWpC9VM/20221003-003504.png">
+<img src="https://i.ibb.co/tzZVmhW/Image.png">
 
 # EPIC DEMO:
 
