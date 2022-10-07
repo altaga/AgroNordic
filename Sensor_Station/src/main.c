@@ -249,21 +249,26 @@ void main(void)
 				LOG_ERR("Failed to update sensor");
 			}
 
+			// Get Sensor Data
 			sensor_get_temperature(&temps);
 			sensor_get_humidity(&hums);
 
+			// Set Temperature
 			temp = (uint16_t)(temps * 100);
-			LOG_INF("%d", temp/100);
+			LOG_INF("%d", temp / 100);
 			k_msleep(1);
+
+			// Set Humidity
 			hum = (uint16_t)hums;
 			LOG_INF("%d", hum);
 			k_msleep(1);
-			hum = hum << 8;
-			hum += counterMemory;
-			moi = counterMemory;
+
+			// Set Moisture
+			moi = (uint16_t)counterMemory;
 			LOG_INF("%d", moi);
 			k_msleep(1);
 
+			// Notify Temperature
 			err = bt_gatt_notify(NULL, &stsensor_svc.attrs[2],
 								 &temp, sizeof(temp));
 			if (err)
@@ -275,7 +280,8 @@ void main(void)
 				LOG_INF("Send notify ok");
 				temp = (temp == 0) ? 0x100 : 0;
 			}
-			k_msleep(100);
+			k_msleep(1000);
+			// Notify Humidity
 			err = bt_gatt_notify(NULL, &stsensor_svc.attrs[5],
 								 &hum, sizeof(hum));
 			if (err)
@@ -287,8 +293,8 @@ void main(void)
 				LOG_INF("Send notify ok");
 				hum = (hum == 0) ? 0x100 : 0;
 			}
-			k_msleep(100);
-			/*
+			k_msleep(1000);
+			// Notify Moisture
 			err = bt_gatt_notify(NULL, &stsensor_svc.attrs[8],
 								 &moi, sizeof(moi));
 			if (err)
@@ -300,8 +306,7 @@ void main(void)
 				LOG_INF("Send notify ok");
 				moi = (moi == 0) ? 0x100 : 0;
 			}
-			*/
-			k_msleep(100);
+			k_msleep(1000);
 		}
 		k_msleep(1);
 	}
