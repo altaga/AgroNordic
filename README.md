@@ -7,7 +7,7 @@ Sustainable platform of sensing and irrigation automation based around the Sense
 
 # Watch our demo video:
 
-[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](pending....)
+[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](https://youtu.be/X0I_Gfu-RyM)
 
 # Test the product:
 
@@ -346,14 +346,6 @@ Now its time to upload the code into your dev board! (If you have already input 
 
 **At this point we have the two "Things" of our AIoT solution that sense and actuate**
 
-# Get Cases:
-
-CAMBIAR
-
-I took the time to make some NEW cases for the project and the result is quite good as you can see:
-
-<img src="https://hackster.imgix.net/uploads/attachments/1502873/image_lpdyj7sbdr.png?auto=compress%2Cformat&w=740&h=555&fit=max">
-<img src="https://hackster.imgix.net/uploads/attachments/1502882/image_g3E4IhPRJ1.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
 Video:
 
@@ -393,7 +385,7 @@ Full Solution:
 
 # EPIC DEMO:
 
-[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](pending...)
+[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](https://youtu.be/X0I_Gfu-RyM)
 
 # Benefits and Sustainability:
 
