@@ -228,49 +228,33 @@ https://github.com/altaga/AgroNordic/blob/main/Gateway/index.py
 
 En esta implementacion se realizo un MQTT Client en la RPi, el cual segun los resultados que este leyendo de nuestros devices y mandando estos a AWA IoT core ademas de poder controlar la valula al escribir un valor en el topic "/changevalve".
 
-
-
-
-
-
-
-
-
-
-
 # RPi - AWS IoT Integration:
 
-Since the messages arrive without problem to the network and Helium, we must integrate AWS IoT, for this we must go to the Integrations section and select AWS IoT Core.
+El poder obtener los datos de los sensores no tiene sentido alguno si no se tiene un servicio en la nube que obtenga los datos y los utilice con algun fin, en este caso AWS.
 
-<img src="https://i.ibb.co/t4bh1Qm/integration.png">
+<img src="https://i.ibb.co/zG8MqSM/image.png">
 
-We will see that the credentials requested are IAM credentials to be able to perform operations in AWS without problem, for this and for security we must create an IAM credential which only has access to AWS IoT services.
+Para poder mandar los datos desde nuestra gateway a AWS IoT, ocupamos su servicio de MQTTS, para eso tendremos que crear una Thing en la plataforma.
 
-## AWS IAM Creation:
+<img src="https://i.ibb.co/DWSzzd0/image.png">
 
-We will create a user which should have programmatic access.
+Puedes ponerle el nombre que quieras a la Thing.
 
-<img src="https://i.ibb.co/fX7HgLL/iam1.png">
+<img src="https://i.ibb.co/prQGyBB/image.png">
 
-We will add the policy to be able to perform actions in AWS IoT.
+La parte importante de este proceso sera obtener los certificados de la thing, pero si quieres experimentar mas con el SDK de IoT de AWS, puedes seleccionar el OS que prefieras.
 
-<img src="https://i.ibb.co/RpmgW1f/iam2.png">
+<img src="https://i.ibb.co/tZ6bqR7/image.png">
 
-Finally we will create the user.
+Una vez creado el SDK lo descargaremos a nuestra maquina.
 
-<img src="https://i.ibb.co/P9q82Wt/iam3.png">
+<img src="https://i.ibb.co/mHwNDG9/image.png">
 
-Lastly he will give us the credentials that we use for the Helium console.
+El paso mas importante aca es obtener estos certificados, ya que ellos no permitiran conectarnos correctamente a AWS IoT.
 
-<img src="https://i.ibb.co/jGJCpXv/iam4.png">
+<img src="https://i.ibb.co/xmsff01/image.png">
 
-The configuration that I used in my console was the following.
-
-<img src="https://i.ibb.co/V94phLW/awshelium.png">
-
-Performing a system test.
-
-<img src="https://i.ibb.co/9gv6Wy9/ezgif-com-gif-maker.gif">
+Ya con estos certificados podras utilizar el MQTTS de la RPi gateway correctamente.
 
 # Dashboard:
 
@@ -284,10 +268,6 @@ We also added a page, where we will see the location of our devices, in order to
 
 <img src="https://i.ibb.co/b3v3WNq/image.png">
 
-Here is an example of how the data arrives from AWS IoT to our page.
-
-<img src="https://i.ibb.co/k4crJ8h/image.png">
-
 ## AWS Amplify:
 
 We are going to use the Amplify service to make the deployment of our application, but this requires having a repository where we have our code to be able to carry out the CI / CD process, we can use any of the following Git repository hosting services.
@@ -300,15 +280,15 @@ However, to maintain a better organization of the apps deployed on AWS, we will 
 
 We select the repository that we create with our code.
 
-<img src="https://i.ibb.co/TKvJQ44/Screenshot-2022-09-26-215917.png">
+<img src="https://i.ibb.co/tBDmxt4/image.png">
 
 Since it is a deployment with ReactJS the Build settings are configured automatically.
 
-<img src="https://i.ibb.co/Hx6B546/Screenshot-2022-09-26-215932.png">
+<img src="https://i.ibb.co/mzrfv1D/image.png">
 
 Once we finish creating the WebApp, all the steps of the Ci / CD cycle should appear and if everything went well they should look like this.
 
-<img src="https://i.ibb.co/fxrC5NR/image.png">
+<img src="https://i.ibb.co/QKC7QWb/image.png">
 
 The result will be a link similar to this one.
 
@@ -334,53 +314,9 @@ Without further ado:
   
 <img src="https://hackster.imgix.net/uploads/attachments/1500565/image_q9pmS0RNXX.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
-- Go then to your Node-RED flow. Remember the openweathermap node? Drag it to the Node-RED dashboard and configure it like so:
+En este caso el dashboard esta consumiendo la API de OpenWeatherMap y como este esta conectado a su vez con AWS IoT core, este es capaz de recibir los datos deel thingy53 y controlar con un clic la activacion o desactivacion de la valvula, segun el clima y los datos obtenidos de el sensor.
 
-<img src="https://hackster.imgix.net/uploads/attachments/1500566/image_6oqOjXY5xZ.png?auto=compress%2Cformat&w=740&h=555&fit=max" height="400px">
-
-- Remember to paste an "Inject" node before, a "function" node after and also a "debug" node if you wish to check what has been transfered.
-
-<img src="https://hackster.imgix.net/uploads/attachments/1500567/image_i4p0qgPQhI.png?auto=compress%2Cformat&w=740&h=555&fit=max">
-
-- Double click the function node and paste the following code:
-
-        msg.payload= msg.payload[0].weather[0].main
-        msg.count = msg.payload
-        return msg;
-
-What this does, is to seek the weather condition that we desire which is "Rain" and it puts it into the payload of the flow.
-
-You can also grab a Text Dashboard node and connect it to this flow to get this info to the dashboard.
-
-- Go to your particle IDE and paste the code for the Photon.
-
-The main point of the code is understanding that it creates a function that can be accessed via the particle cloud. Whenever you input certain conditions to that functions externally you can do some previous programmed actions.
-
-Flash it and go back to Node-RED. If you need aditional help with the Photon go directly to www.particle.io/start for a great place to begin.
-
-- Now in Node-RED make a flow like so:
-
-<img src="https://hackster.imgix.net/uploads/attachments/1500568/image_jRkLl6sX72.png?auto=compress%2Cformat&w=740&h=555&fit=max">
-
-The Particle node is indeed the function node.
-
-- Double click on the Particle node and click on the pencil on "Add new particle cloud". Then fill it like so:
-
-<img src="https://hackster.imgix.net/uploads/attachments/1500569/image_5ulsMmrQh8.png?auto=compress%2Cformat&w=740&h=555&fit=max">
-
-Your access token is in your particle IDE, Devices section and clicking on the current device you are using. Update and in the next screen fill it with your device name that you can get on the Particle IDE and also on "CLoud Function" input "led".
-
-- Now your Particle Photon node is configured to get an "on" or "off" payload and do the appropriate action with it.
-
-- To configure properly the email node you have to log in to your gmail account and then go to: http://myaccount.google.com/u/1/lesssecureapps and turn it on, if you followed this guide accordingly, you set a password and username to your Node-RED so this procedure should be safe.
-
-Then just fill the required fields.
-
-- The most important step:
-
-Finally, you have reached the end of this part of the tutorial so you have an idea of how to do the main parts of the project. Next is to do your own and use the concepts to get to a final product like the one presented here. There is also the main Flow that we did but we strongly suggest the reader to cultivate their own so you can have a great information harvest.
-
-If you still want to have a complete solution in the "code section" there is the Node Red flow used in the project, which you should load into the Jetson Nano or any other computer (hint: that includes cloud services).
+<img src="https://i.ibb.co/YhFj9gK/vlcsnap-2022-10-06-20h41m11s881.png">
 
 # Going Green: Solar Power:
 
@@ -388,7 +324,7 @@ This device has to have a solar panel to reduce the cost of infrastructure.
 
 We recommend that you use at least a 2.5W Solar panel (I tried on a 2W panel and failed, it got very low power and lifetime) in tandem with a LiPo Battery like in the following circuit:
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503105/image_SihYHRhzMZ.png?auto=compress%2Cformat&w=740&h=555&fit=max">
+<img src="https://i.ibb.co/c6X2gZN/temp2-bb.png">
 
 The power segment of the circuit is intended to power the circuit via a Solar Power during the day and then charge the LiPo battery so it can continue working at night.
 
@@ -396,7 +332,7 @@ For this purpose you can see the Regulator in the image that is a connection mod
 
 <img src="https://hackster.imgix.net/uploads/attachments/1500571/image_h5j8edt4nF.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
-The Sigfox version of the project, the same can be done with the Sensecap Kit.
+The Sigfox version of the project, the same can be done with the Thingy53.
 
 As previously stated I tried with my small 2W panel, but we are in the rainy season where I live so we need a bigger panel. I urge someone who already has the bigger panel to try it. For the Demo I will be using a Battery. BE very wary when trying this setup, I would go to battery just to be sure and by the way it will be an external one, because for it to work with the AA it may, you have to destroy a resistance.
 
@@ -408,13 +344,13 @@ Lipo Rider pro: https://www.seeedstudio.com/LiPo-Rider-Pro-p-992.html
 
 Solar panel: https://www.seeedstudio.com/2-5W-Solar-Panel-116X160.html
 
-LiPo Battery: https://www.adafruit.com/product/258
-
 Now its time to upload the code into your dev board! (If you have already input your credentials properly beforehand, if not go to the next step). Get everything into their cases (3D CAD models provided).
 
 **At this point we have the two "Things" of our AIoT solution that sense and actuate**
 
 # Get Cases:
+
+CAMBIAR
 
 I took the time to make some NEW cases for the project and the result is quite good as you can see:
 
@@ -429,31 +365,33 @@ Video:
 
 Here is the final version of the complementary sensor:
 
-LoRa E5 Mini:
+Thingy53 Valve:
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503205/image_2hLtqRxLPi.png?auto=compress%2Cformat&w=740&h=555&fit=max"  height="400px">
+<img src="https://i.ibb.co/Nxr11wB/20221002-235047.png">
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503099/image_oe3FOQt0G4.png?auto=compress%2Cformat&w=740&h=555&fit=max" height="400px">
+On Site:
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503098/image_WbAMADC22x.png?auto=compress%2Cformat&w=740&h=555&fit=max" height="400px">
+<img src="https://i.ibb.co/qxNC9Zm/20221003-134815.png">
 
-Testing the Valve:
+Thingy53 Sensors:
 
-<img src="https://i.ibb.co/0VLXcQt/plug-and-play.gif"  height="400px">
+<img src="https://i.ibb.co/pnqC2YX/20221002-234904.jpg">
 
-Installing the Valve:
+On Site:
 
-<img src="https://i.ibb.co/mH2GFhn/valve.gif"  height="400px">
+<img src="https://i.ibb.co/CWWF7Zh/20221003-134835.jpg">
 
-This is the case with everything inside while testing:
+RPi Gateway:
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503169/image_hI5DIQOr0u.png?auto=compress%2Cformat&w=740&h=555&fit=max"  height="400px">
-<img src="https://hackster.imgix.net/uploads/attachments/1503170/image_MNzRaH3swp.png?auto=compress%2Cformat&w=740&h=555&fit=max" height="400px">
-<img src="https://hackster.imgix.net/uploads/attachments/1503171/image_nUeDjvKW36.png?auto=compress%2Cformat&w=740&h=555&fit=max" height="400px">
+<img src="https://i.ibb.co/CHGRrdX/20221002-235534.jpg">
 
-And this is the result with an external battery:
+On Site:
 
-<img src="https://hackster.imgix.net/uploads/attachments/1503235/image_JjsDfEXumg.png?auto=compress%2Cformat&w=740&h=555&fit=max"  height="400px">
+<img src="https://i.ibb.co/mSvNmkH/20221003-134815-1.png">
+
+Full Solution:
+
+<img src="https://i.ibb.co/sWpC9VM/20221003-003504.png">
 
 # EPIC DEMO:
 
