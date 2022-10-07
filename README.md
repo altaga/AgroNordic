@@ -110,13 +110,15 @@ Crop yield analysis.
 
 # Connection Diagram:
 
-## Hardware Diagram:
+## System Diagram:
+
+<img src="https://i.ibb.co/xqWW0mb/General-drawio.png">
 
 ## Temperature, Humidity and Moisture Device:
 
 <img src="https://i.ibb.co/JFcVwKX/temp-bb.png">
 
-### Electro Valve:
+## Electro Valve:
 
 <img src="https://i.ibb.co/bHM8cV0/vLCE-bb.png">
 
