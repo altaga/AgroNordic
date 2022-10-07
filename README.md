@@ -347,10 +347,6 @@ Now its time to upload the code into your dev board! (If you have already input 
 **At this point we have the two "Things" of our AIoT solution that sense and actuate**
 
 
-Video:
-
-[![Demo](https://i.ibb.co/j3DCtPZ/image.png)](https://www.youtube.com/watch?v=o-x40sDlnao)
-
 # Final Product:
 
 Here is the final version of the complementary sensor:
