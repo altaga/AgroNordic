@@ -46,10 +46,6 @@ The first one was Agrofox: https://www.hackster.io/107329/aggrofox-large-scale-a
 
 The second one is AgroHelium: https://www.hackster.io/Edoliver/agrohelium-urban-agriculture-aiot-solution-d8fbf4
 
-We are also borrowing a lot from this one from Seeed:
-
-https://youtu.be/NQt-XLcSIwA?list=PLpH_4mf13-A0MzOdPNITVfoVBMvf7Rg9g
-
 Our intention this time is to get as close as possible to a functional prototype (the step before Mass-manufacturing), of course, with several upgrades along the way!
 
 # Introduction:
@@ -60,7 +56,7 @@ Business Insider Singapore.
 
 <img src="https://hackster.imgix.net/uploads/attachments/1500556/image_oICGQlCDSx.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
-KImbal Musk (Elon's brother) is hyped about this.
+Kimbal Musk (Elon's brother) is hyped about this.
 
 <img src="https://hackster.imgix.net/uploads/attachments/1500557/image_v5DrlEKpJ6.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
@@ -140,11 +136,11 @@ Real implementation:
 
 <img src="https://i.ibb.co/37304R1/20221003-001525.jpg">
 
-El codigo de esta implementacion usando nRF Connect es:
+The code for this implementation using nRF Connect is:
 
 https://github.com/altaga/AgroNordic/tree/main/Sensor_Station
 
-Toda la configuracion de BLE que tiene el device es la siguiente.
+All the BLE configuration that the device has is as follows.
 
 - Device Name: SENSORST
 - Service Temperature UUID: 0000fe40cc7a482a984a7f2ed5b3e58f
@@ -154,7 +150,7 @@ Toda la configuracion de BLE que tiene el device es la siguiente.
 - Service Moisture UUID: 0000fe42cc7a482a984a7f2ed5b3e58f
   - Characteristic UUID: 0x0000fe458e2245419d4c21edae82ed19
 
-La parte del codigo que manda los datos como notificaciones BLE para cada uno de los sensores es.
+The part of the code that sends the data as BLE notifications for each of the sensors is:
 
     err = bt_gatt_notify(NULL, &stsensor_svc.attrs[2], &temp, sizeof(temp));
     if (err)
@@ -185,21 +181,21 @@ Bill of Materials:
 
 <img src="https://i.ibb.co/bHM8cV0/vLCE-bb.png">
 
-Real implementation:
+Our real implementation:
 
 <img src="https://i.ibb.co/M8Q4dpC/20221003-001929.jpg">
 
-El codigo de esta implementacion usando nRF Connect es:
+The code for this implementation using nRF Connect is:
 
 https://github.com/altaga/AgroNordic/tree/main/Valve_Code
 
-Toda la configuracion de BLE que tiene el device es la siguiente.
+All the BLE configuration that the device has is as follows.
 
 - Device Name: ElectroValve
 - Service UUID: 0000fe38cc7a482a984a7f2ed5b3e58f
   - Characteristic UUID: 0000fe398e2245419d4c21edae82ed19
 
-La parte del codigo que controlaba el estado de la electrovlula era el siguiente.
+The part of the code that controlled the status of the solenoid valve is as follows.
 
     void led_update(void)
     {
@@ -216,45 +212,45 @@ Code: URL: https://github.com/altaga/AgroNordic/blob/main/Valve_Code/src/led_svc
 
 # RPi Gateway:
 
-Por ultimo como cereza en el pastel, vamos a ocupar una RPi como gateway BLE para mandar los datos ditrectamente a AWS IoT.
+Finally, we are going to use an RPi as a BLE gateway to send the data directly to AWS IoT.
 
 Real implementation:
 
 <img src="https://i.ibb.co/KFTyRGP/20221002-235618.jpg">
 
-El codigo de esta implementacion usando nRF Connect es:
+The code for this implementation using nRF Connect is:
 
 https://github.com/altaga/AgroNordic/blob/main/Gateway/index.py
 
-En esta implementacion se realizo un MQTT Client en la RPi, el cual segun los resultados que este leyendo de nuestros devices y mandando estos a AWA IoT core ademas de poder controlar la valula al escribir un valor en el topic "/changevalve".
+In this implementation, an MQTT Client was made in the RPi, which according to the results it is reading from our devices and sending these to AWA IoT core in addition to being able to control the value by writing a value in the "/changevalve" topic.
 
 # RPi - AWS IoT Integration:
 
-El poder obtener los datos de los sensores no tiene sentido alguno si no se tiene un servicio en la nube que obtenga los datos y los utilice con algun fin, en este caso AWS.
+Being able to obtain the data from the sensors does not make any sense if you do not have a cloud service that obtains the data and uses it for some purpose, in this case AWS.
 
 <img src="https://i.ibb.co/MCDgc21/Image.png">
 
-Para poder mandar los datos desde nuestra gateway a AWS IoT, ocupamos su servicio de MQTTS, para eso tendremos que crear una Thing en la plataforma.
+In order to send the data from our gateway to AWS IoT, we use its MQTTS service, for that we will have to create a Thing on the platform.
 
 <img src="https://i.ibb.co/DWSzzd0/image.png">
 
-Puedes ponerle el nombre que quieras a la Thing.
+You can name the Thing whatever you want.
 
 <img src="https://i.ibb.co/prQGyBB/image.png">
 
-La parte importante de este proceso sera obtener los certificados de la thing, pero si quieres experimentar mas con el SDK de IoT de AWS, puedes seleccionar el OS que prefieras.
+The important part of this process will be getting the thing's certificates, but if you want to experience more with the AWS IoT SDK, you can select the OS of your choice.
 
 <img src="https://i.ibb.co/tZ6bqR7/image.png">
 
-Una vez creado el SDK lo descargaremos a nuestra maquina.
+Once the SDK is created, we will download it to our machine.
 
 <img src="https://i.ibb.co/mHwNDG9/image.png">
 
-El paso mas importante aca es obtener estos certificados, ya que ellos no permitiran conectarnos correctamente a AWS IoT.
+The most important step here is to obtain these certificates, since they will not allow us to connect correctly to AWS IoT.
 
 <img src="https://i.ibb.co/xmsff01/image.png">
 
-Ya con estos certificados podras utilizar el MQTTS de la RPi gateway correctamente.
+Now with these certificates you can use the MQTTS of the RPi gateway correctly.
 
 # Dashboard:
 
@@ -314,7 +310,7 @@ Without further ado:
   
 <img src="https://hackster.imgix.net/uploads/attachments/1500565/image_q9pmS0RNXX.png?auto=compress%2Cformat&w=740&h=555&fit=max">
 
-En este caso el dashboard esta consumiendo la API de OpenWeatherMap y como este esta conectado a su vez con AWS IoT core, este es capaz de recibir los datos deel thingy53 y controlar con un clic la activacion o desactivacion de la valvula, segun el clima y los datos obtenidos de el sensor.
+In this case the dashboard is consuming the OpenWeatherMap API and since it is in turn connected to the AWS IoT core, it is capable of receiving data from the thingy53 and controlling with a click the activation or deactivation of the valve, depending on the weather and the data obtained from the sensor.
 
 <img src="https://i.ibb.co/YhFj9gK/vlcsnap-2022-10-06-20h41m11s881.png">
 
@@ -421,7 +417,7 @@ Sustainable disruption is needed because current methods are insufficient for th
 
 The current project offers an initial solution to these problems by starting with one of my own, but it is not difficult to see how one of these can expand. This offers a cheap and affordable solution that can serve the local, home or urban farmer as it can automate several of their processes and most important of all provide valuable information about their crops that they can use to make good decisions.
 
-Thinking about the future of the project, of course I still like Helium after all these years. And despite some of the controversies that have been coming up since last year, as a builder first I can see the potential of the biggest LoRa Network in the world and now with their 5G and Cellular side pivot. Regarding the [SenseCAP K1100 - The Sensor Protytype Kit with LoRa® and AI](https://www.seeedstudio.com/seeed-studio-lorawan-dev-kit-p-5370.html), I think it offers a great solution for builders, makers and even home growers and tinkerers alike. With it we were able to pass less time on the bench soldering and getting everything together and more time designing the product and on its presentation and concept. Not to mention that the Wio Terminal is excellent to give your product a much more refined touch and further possibilities of commercialization.
+Naturally we now have this kind of solution now with different and diverse communication protocols, from LoRa using the Helium Network to WiFi and now this one through Nordic using BLE and a gateway that connects to two different kind of Thingy 53 applications. One to Sense and one to actuate. If offers huge versatility and configurability options through this setup. With these kind of solutions the urban farmer can choose which kind f solution suits best but for the home farmer this BLE -  Nordic setup offers perhaps the better combo.
 
 # References:
 
